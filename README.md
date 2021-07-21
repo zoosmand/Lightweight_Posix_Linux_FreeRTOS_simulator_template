@@ -1,4 +1,4 @@
-# FreeRTOS lightweight Posix/Linux simulator
+# FreeRTOS lightweight Posix/Linux simulator template
 
 - lsb_release --all
   - Distributor ID: Ubuntu
