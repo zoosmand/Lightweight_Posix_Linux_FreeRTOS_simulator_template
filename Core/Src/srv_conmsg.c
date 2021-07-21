@@ -33,21 +33,18 @@ static void prvSendTimerMessage(TimerHandle_t xTimerHandle);
   * @return None
   */
 void srvConsoleMessenger(void) {
-	
-	// const TickType_t xTimerPeriod = mainTIMER_SEND_FREQUENCY_MS;
+  xQueue = xQueueCreate(QUEUE_LENGTH, sizeof(uint32_t));
 
-	xQueue = xQueueCreate(QUEUE_LENGTH, sizeof(uint32_t));
+  if(xQueue != NULL) {
+    xTaskCreate(prvReceiveMessage, "ReceiveMessage", RECEIVER_STACK_SIZE, NULL, RECEIVER_PRIO, NULL);
+    xTaskCreate(prvSendMessage, "SendMessage", TASK_SENDER_STACK_SIZE, NULL, TASK_SENDER_PRIO, NULL);
 
-	if(xQueue != NULL) {
-		xTaskCreate(prvReceiveMessage, "ReceiveMessage", RECEIVER_STACK_SIZE, NULL, RECEIVER_PRIO, NULL);
-		xTaskCreate(prvSendMessage, "SendMessage", TASK_SENDER_STACK_SIZE, NULL, TASK_SENDER_PRIO, NULL);
+    xTimer = xTimerCreate("Timer", TIMER_SENDER_FREQ, pdTRUE, NULL, prvSendTimerMessage);
 
-		xTimer = xTimerCreate("Timer", TIMER_SENDER_FREQ, pdTRUE, NULL, prvSendTimerMessage);
-
-		if(xTimer != NULL) {
-			xTimerStart( xTimer, 0 );
-		}
-	}
+    if(xTimer != NULL) {
+      xTimerStart( xTimer, 0 );
+    }
+  }
 }
 
 
@@ -60,14 +57,14 @@ static void prvSendMessage(void *pvParameters) {
   TickType_t xNextWakeTime;
   const uint32_t ulValueToSend = TASK_SENDER_VAL;
 
-	(void) pvParameters;
+  (void) pvParameters;
 
-	xNextWakeTime = xTaskGetTickCount();
+  xNextWakeTime = xTaskGetTickCount();
 
-	while (1) {
-		vTaskDelayUntil(&xNextWakeTime, TASK_SENDER_FREQ);
-		xQueueSend(xQueue, &ulValueToSend, 0U);
-	}
+  while (1) {
+    vTaskDelayUntil(&xNextWakeTime, TASK_SENDER_FREQ);
+    xQueueSend(xQueue, &ulValueToSend, 0U);
+  }
 }
 
 
@@ -80,7 +77,7 @@ static void prvSendTimerMessage(TimerHandle_t xTimerHandle) {
   const uint32_t ulValueToSend = TIMER_SENDER_VAL;
   (void) xTimerHandle;
 
-	xQueueSend(xQueue, &ulValueToSend, 0U);
+  xQueueSend(xQueue, &ulValueToSend, 0U);
 }
 
 
@@ -92,11 +89,11 @@ static void prvSendTimerMessage(TimerHandle_t xTimerHandle) {
 static void prvReceiveMessage(void *pvParameters) {
   uint32_t ulReceivedValue;
 
-	(void) pvParameters;
+  (void) pvParameters;
 
-	while (1) {
-		xQueueReceive( xQueue, &ulReceivedValue, portMAX_DELAY );
-		
+  while (1) {
+    xQueueReceive( xQueue, &ulReceivedValue, portMAX_DELAY );
+    
     switch (ulReceivedValue) {
       case TASK_SENDER_VAL:
         zConsolePrint( "Message received from task\n" );
@@ -110,5 +107,5 @@ static void prvReceiveMessage(void *pvParameters) {
         zConsolePrint( "Unexpected message\n" );
         break;
     }
-	}
+  }
 }
