@@ -27,7 +27,7 @@ static StaticSemaphore_t xStdioMutexBuffer;
   * @brief  Initialize console.
   * @return None
   */
-void zConsoleInit(void) {
+void vConsoleInit(void) {
     xStdioMutex = xSemaphoreCreateMutexStatic(&xStdioMutexBuffer);
 }
 
@@ -37,7 +37,7 @@ void zConsoleInit(void) {
   * @param  fmt: Buffer contains text od data to be printed
   * @return None
   */
-void zConsolePrint(const char *fmt, ...) {
+void vConsolePrint(const char *fmt, ...) {
     va_list vargs;
 
     va_start(vargs, fmt);

@@ -38,8 +38,8 @@ int main(void) {
     uiTraceStart();
   #endif
 
-  zConsoleInit();
-  zConsolePrint("Starting echo blinky demo\n");
+  vConsoleInit();
+  vConsolePrint("Starting echo blinky demo\n");
 
   FreeRTOS_Run();
 

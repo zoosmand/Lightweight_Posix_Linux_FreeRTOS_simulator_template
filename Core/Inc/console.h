@@ -22,8 +22,8 @@
 
 
 /* Exported functions prototypes ---------------------------------------------*/
-void zConsoleInit(void);
-void zConsolePrint(const char *fmt, ...);
+void vConsoleInit(void);
+void vConsolePrint(const char *fmt, ...);
 void vLoggingPrintf(const char *pcFormat, ...);
 
 

@@ -96,15 +96,15 @@ static void prvReceiveMessage(void *pvParameters) {
     
     switch (ulReceivedValue) {
       case TASK_SENDER_VAL:
-        zConsolePrint( "Message received from task\n" );
+        vConsolePrint( "Message received from task\n" );
         break;
 
       case TIMER_SENDER_VAL:
-        zConsolePrint( "Message received from software timer\n" );
+        vConsolePrint( "Message received from software timer\n" );
         break;
 
       default:
-        zConsolePrint( "Unexpected message\n" );
+        vConsolePrint( "Unexpected message\n" );
         break;
     }
   }
