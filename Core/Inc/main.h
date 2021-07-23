@@ -22,6 +22,7 @@ extern "C" {
 #include <unistd.h>
 #include <stdarg.h>
 #include <pthread.h>
+#include <sys/select.h>
 
 /* FreeRTOS kernel includes --------------------------------------------------*/
 #include "FreeRTOS.h"
