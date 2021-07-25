@@ -31,6 +31,8 @@ extern "C" {
 milliseconds to ticks using the pdMS_TO_TICKS() macro. */
 #define TASK_SENDER_FREQ			          pdMS_TO_TICKS(200UL)
 #define TIMER_SENDER_FREQ               pdMS_TO_TICKS(2000UL)
+#define TIMER_RX_SEM_FREQ               pdMS_TO_TICKS(1000UL)
+#define TIMER_RX_SEM_TO_WAIT            pdMS_TO_TICKS(10UL)
 
 /* The number of items the queue can hold at once. */
 #define QUEUE_LENGTH					          2

@@ -17,7 +17,7 @@ extern "C" {
 #endif
 
 /* Standard includes ---------------------------------------------------------*/
-#include <stdlib.h>
+#include <stdlib.h> //sudo apt-get install libc6-dev-i386
 #include <stdio.h>
 #include <unistd.h>
 #include <stdarg.h>

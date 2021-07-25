@@ -15,11 +15,15 @@
 static QueueHandle_t xQueue = NULL;
 static TimerHandle_t xTimer = NULL;
 
+static TimerHandle_t xTimerRx = NULL;
+static SemaphoreHandle_t xRxIRQ = NULL;
+
 /* Function prototypes -------------------------------------------------------*/
 static void prvReceiveMessage(void *pvParameters);
 static void prvSendMessage(void *pvParameters);
 static void prvSendTimerMessage(TimerHandle_t xTimerHandle);
-
+static void prvSendRxSemaphor(TimerHandle_t xTimerHandle);
+static void prvRxMessageHandle(void *pvParameters);
 
 
 
@@ -41,8 +45,16 @@ void srvConsoleMessenger(void) {
 
     xTimer = xTimerCreate("Timer", TIMER_SENDER_FREQ, pdTRUE, NULL, prvSendTimerMessage);
 
+
+    xTaskCreate(prvRxMessageHandle, "RxMessageHandle", RECEIVER_STACK_SIZE, NULL, RECEIVER_PRIO, NULL);
+    xTimerRx = xTimerCreate("TimerRx", TIMER_RX_SEM_FREQ, pdTRUE, NULL, prvSendRxSemaphor);
+    xRxIRQ = xSemaphoreCreateBinary();
+
     if(xTimer != NULL) {
       xTimerStart( xTimer, 0 );
+    }
+    if(xTimerRx != NULL) {
+      xTimerStart( xTimerRx, 0 );
     }
   }
 }
@@ -82,6 +94,19 @@ static void prvSendTimerMessage(TimerHandle_t xTimerHandle) {
 
 
 /**
+  * @brief  Handles sending messages from a times.
+  * @param  pvParameters: Link to FreeRTOS parameters
+  * @return None
+  */
+static void prvSendRxSemaphor(TimerHandle_t xTimerHandle) {
+  const uint32_t ulValueToSend = TIMER_SENDER_VAL;
+  (void) xTimerHandle;
+
+  xSemaphoreGive(xRxIRQ);
+}
+
+
+/**
   * @brief  Handles receiving messages from a queue.
   * @param  pvParameters: Link to FreeRTOS parameters
   * @return None
@@ -106,6 +131,25 @@ static void prvReceiveMessage(void *pvParameters) {
       default:
         vConsolePrint( "Unexpected message\n" );
         break;
+    }
+  }
+}
+
+
+
+/**
+  * @brief  Handles receiving messages from a queue.
+  * @param  pvParameters: Link to FreeRTOS parameters
+  * @return None
+  */
+static void prvRxMessageHandle(void *pvParameters) {
+  uint32_t ulReceivedValue;
+
+  (void) pvParameters;
+
+  while (1) {
+    if (xSemaphoreTake(xRxIRQ, TIMER_RX_SEM_TO_WAIT) == pdTRUE) {
+      vConsolePrint( "Receive Semaphor\n" );
     }
   }
 }

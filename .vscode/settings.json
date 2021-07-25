@@ -4,6 +4,10 @@
         "cstdio": "c",
         "freertos.h": "c",
         "main.h": "c",
-        "usart.h": "c"
+        "usart.h": "c",
+        "stdlib.h": "c",
+        "stdio.h": "c",
+        "unistd.h": "c",
+        "stdarg.h": "c"
     }
 }
